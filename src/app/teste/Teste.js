@@ -35,7 +35,7 @@ class Teste extends React.Component
         this.renderFormulario = this.renderFormulario.bind(this);
 
         this.state = {
-            sidx: 'e.descricao',
+            sidx: 'e.nome',
             sord: 'asc',
             teste: {}
         };
@@ -114,7 +114,7 @@ class Teste extends React.Component
     render()
     {
         var campos = [
-                {id: "e.descricao", name: "Descrição", type: "string"}
+                {id: "e.nome", name: "Descrição", type: "string"}
             ],
             filters = [[
                 {
@@ -152,7 +152,7 @@ class Teste extends React.Component
         return (
             <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                 <TableRow>
-                    <TableHeaderColumn onTouchTap={() => this.onSort('descricao')}>Nome</TableHeaderColumn>
+                    <TableHeaderColumn onTouchTap={() => this.onSort('nome')}>Nome</TableHeaderColumn>
                     <TableHeaderColumn  style={{width: '80px'}}>Excluir</TableHeaderColumn>
                     <TableHeaderColumn  style={{width: '100px'}}>Editar</TableHeaderColumn>
                 </TableRow>
@@ -168,7 +168,7 @@ class Teste extends React.Component
         return itens.map((item, i) => {
             return (
                 <TableRow key={item.id}>
-                    <TableRowColumn>{item.descricao}</TableRowColumn>
+                    <TableRowColumn>{item.nome}</TableRowColumn>
                     <TableRowColumn style={{"width": "400px", "textAlign": "right"}}>
                         <FlatButton icon={<ActionDeleteForever />} onTouchTap={this.handlerRemover.bind(this, i)}/>
                         <FlatButton
@@ -194,8 +194,8 @@ class Teste extends React.Component
                 <TextField
                     fullWidth={true}
                     floatingLabelText='Descrição'
-                    value={this.state.teste.descricao || ''}
-                    onChange={(a, v) => this.onChange('descricao', v)}
+                    value={this.state.teste.nome || ''}
+                    onChange={(a, v) => this.onChange('nome', v)}
                 />
             </div>
         );

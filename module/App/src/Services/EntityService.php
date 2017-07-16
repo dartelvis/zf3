@@ -1,36 +1,17 @@
 <?php
-namespace Common\Model\Services;
 
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query\Expr\Comparison;
-
-abstract class EntityService implements \Zetta\Common\Model\Services\EntityServiceInterface
+namespace App\Services;
+ini_set('display_errors', 1);
+abstract class EntityService
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var \PDO
      */
-    protected $em;
+    private $pdo;
 
-    public function __construct(EntityManager $em = null)
+    public function __construct(\PDO $pdo)
     {
-        mb_internal_encoding("UTF-8");
-        $this->em = $em;
-    }
-
-    /**
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getEm()
-    {
-        return $this->em;
-    }
-
-    /**
-     * @param \Doctrine\ORM\EntityManager $em
-     */
-    public function setEm(EntityManager $em)
-    {
-        $this->em = $em;
+        $this->pdo = $pdo;
     }
 
     /**
@@ -113,84 +94,34 @@ abstract class EntityService implements \Zetta\Common\Model\Services\EntityServi
      */
     public function consultar(&$params)
     {
+        $camposTipos = ['uc.semComprar' => ['type' => 'integer']];
         $firstResult = ($params['rows'] * $params['page']) - $params['rows'];
-        $qb = $this->getQueryBuilder();
 
-        $this->getFiltrosConsultaDql($qb, $params['filtros']);
-        $select = $qb->getDQLPart('select');
+        $sql = " from {$this->getTable()}  e " .  $this->getFiltrosConsultaSql($params['filtros'], $camposTipos);
 
-        // Recupera totais de registros
-        if ($params['count']) {
-            $query2 = $qb->select('COUNT(e)')->getQuery();
-            $query2->useQueryCache(false);
-            $result2 = $query2->getResult();
-            $params['count'] = $result2[0][1];
-
-            if ($firstResult > $params['count']) {
-                $firstResult = 0;
-                $params['page'] = 1;
-            }
+        // Total de registros
+        $params['count'] = $this->pdo->query("select count(*) as total $sql")->fetch()['total'];
+        if ($params['count'] && $firstResult > $params['count']) {
+            $firstResult = 0;
+            $params['page'] = 1;
         }
 
-        $qb->add('select', array_shift($select));
-
-        if ($firstResult) {
-            $qb->setFirstResult($firstResult);
+        if ($params['sidx']) {
+            $sql .= $this->dqlToSql(
+                ' order by ' . $params['sidx'] . '  ' . $params['sord'] . ' nulls '
+                . ($params['sord'] == 'asc' ? ' first ' : ' last ')
+            );
         }
         if ($params['rows']) {
-            $qb->setMaxResults($params['rows']);
+            $sql .= ' limit ' . $params['rows'];
         }
-        if ($params['sidx']) {
-            $qb->addOrderBy($params['sidx'], $params['sord']);
+        if ($firstResult > 0) {
+            $sql .= ' offset ' . $firstResult;
         }
 
-        $query = $qb->getQuery();
-        return $this->executeQuery($query);
-    }
+        $sql = 'select * ' . $sql;
 
-    /**
-     * Retorna mapeamento DQL. (tipo do campo recuperado pelos metadados da entidade)
-     * É necessario o query builder para saber se foi utilizado algum join
-     * na consulta.
-     * O alias principal sempre será 'e'. Se o campo informado tiver um alias
-     * diferente significa que um join foi utilizado e a consulta dos
-     * metadados deve ser feita na entidade associada.
-     *
-     * @param \Doctrine\ORM\QueryBuilder $qb
-     * @param string $campo
-     * @return array
-     */
-    public function getTypeMd(\Doctrine\ORM\QueryBuilder &$qb, &$campo, $repository = null)
-    {
-        $repository = $repository ?: $this->getRepository();
-        $md = $this->em->getClassMetadata($repository->getClassName());
-        list($alias, $field) = explode('.', $campo);
-        if ('e' !== $alias) {
-            $aliasCache = array('e' => $md);
-            $joins = $qb->getDQLPart('join')['e'];
-
-            /* @var $join \Doctrine\ORM\Query\Expr\Join */
-            foreach ($joins as $join) {
-
-                // O join pode ter os seguinte padrão:
-                // alias.coluna ou ser diretamente o nome de uma classe
-                if (false !== strpos($join->getJoin(), '.')) {
-                    list($alias2, $fieldJoin2) = explode('.', $join->getJoin());
-                    $md = $aliasCache[$alias2];
-                    $fieldMapping = $md->getAssociationMapping($fieldJoin2);
-                    $entidade = $this->em->getClassMetadata($fieldMapping['targetEntity']);
-                } else {
-                    $entidade = $this->em->getClassMetadata($join->getJoin());
-                }
-                if ($join->getAlias() === $alias) {
-                    $md = $entidade;
-                    break;
-                }
-                $aliasCache[$join->getAlias()] = $entidade;
-            }
-        }
-        $fieldMapping = $md->getFieldMapping($field);
-        return $fieldMapping;
+        return $this->pdo->query($sql)->fetchAll();
     }
 
     /**
@@ -215,42 +146,7 @@ abstract class EntityService implements \Zetta\Common\Model\Services\EntityServi
         return in_array($fieldMapping['type'], array('date', 'datetime'));
     }
 
-    public function getFiltrosConsultaDql(\Doctrine\ORM\QueryBuilder $qb, &$filtros, $camposTipos = [])
-    {
-        // nu: nulo, nn-não nulo, it: verdadeiro, if: falso
-        $operadorEspecial = (!empty($filtros['operador']) && in_array($filtros['operador'], ['nu', 'nn', 'it', 'if']));
-
-        if (!empty($filtros['campo']) && (!empty($filtros['valor']) || $operadorEspecial)) {
-            // Controla a condição de pesquisa conforme o tipo do campo.
-            // Quando for numero não se pode utilizar like.
-            $fieldMapping = !empty($camposTipos[$filtros['campo']])
-                    ? $camposTipos[$filtros['campo']] : $this->getTypeMd($qb, $filtros['campo']);
-            if (!empty($filtros['operador']) && (!$this->isDate($fieldMapping) || $operadorEspecial)) {
-                $qb->andWhere($this->getFiltroByOperador($filtros, $this->isNumeric($fieldMapping)));
-
-            // O valor a ser consultado deve ser numerico
-            } elseif ($this->isNumeric($fieldMapping)) {
-                if (is_numeric($filtros['valor'])) {
-                    $qb->andWhere($qb->expr()->eq($filtros['campo'], $filtros['valor']));
-                }
-
-            // Adicionado hora devido ao tipo datetime
-            } elseif ($this->isDate($fieldMapping)) {
-                $qb->andWhere($filtros['campo'] . " >= '" . $filtros['valor'] . " 00:00:00'");
-                $qb->andWhere($filtros['campo'] . " <= '" . $filtros['valor'] . " 23:59:59'");
-            } else {
-                $qb->andWhere(
-                    $qb->expr()->like("lower(" . $filtros['campo'] . ")", "'%" . mb_strtolower($filtros['valor']) ."%'")
-                );
-            }
-        }
-
-        if (!empty($filtros['adicional'])) {
-            $qb->andWhere($filtros['adicional']);
-        }
-    }
-
-    public function getFiltrosConsultaSql(\Doctrine\ORM\QueryBuilder $qb, &$filtros, $camposTipos = [])
+    public function getFiltrosConsultaSql(&$filtros, $camposTipos = [])
     {
         // nu: nulo, nn-não nulo, it: verdadeiro, if: falso
         $operadorEspecial = (!empty($filtros['operador']) && in_array($filtros['operador'], ['nu', 'nn', 'it', 'if']));
@@ -259,9 +155,7 @@ abstract class EntityService implements \Zetta\Common\Model\Services\EntityServi
         if (!empty($filtros['campo']) && (!empty($filtros['valor']) || $operadorEspecial)) {
             // Controla a condição de pesquisa conforme o tipo do campo.
             // Quando for numero não se pode utilizar like.
-            $fieldMapping =  !empty($camposTipos[$filtros['campo']])
-                    ? $camposTipos[$filtros['campo']] : $this->getTypeMd($qb, $filtros['campo']);
-
+            $fieldMapping = $camposTipos[$filtros['campo']];
             if (!empty($filtros['operador']) && (!$this->isDate($fieldMapping) || $operadorEspecial)) {
                 $filtros['campo'] = $this->dqlToSql($filtros['campo']);
                 $sql .= $condicao . $this->getFiltroByOperador($filtros, $this->isNumeric($fieldMapping), true);
@@ -389,11 +283,8 @@ abstract class EntityService implements \Zetta\Common\Model\Services\EntityServi
             default:
                 break;
         }
-        return ($sql ? "{$campo} {$operador} {$valor}" : new Comparison($campo, $operador, $valor));
+        return "{$campo} {$operador} {$valor}";
     }
 
-    /**
-     * @return \Doctrine\ORM\EntityRepository
-     */
-    abstract public function getRepository();
+    abstract public function getTable();
 }

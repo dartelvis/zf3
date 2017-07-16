@@ -4,15 +4,22 @@ namespace App\Controller;
 
 class TesteController extends DefaultController
 {
-    public function testeAction()
+    /**
+     * @var TesteService
+     */
+    private $service;
+
+    public function getService()
     {
-        var_dump('aki teste controller');exit();
+        if ($this->service == null) {
+            $this->service = new \App\Services\TesteService($this->getPdo());
+        }
+        return $this->service;
     }
 
     public function consultarAction()
     {
-        var_dump('aki teste controller');exit();
-
-        return $this->sendJson($this->consultaPadrao($service));
+        $post = json_decode(file_get_contents("php://input"), true);
+        return $this->sendJson($this->consultaPadrao($this->getService(), $post));
     }
 }

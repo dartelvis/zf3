@@ -204,7 +204,7 @@ class Crud extends React.Component
                         activePage={this.consulta.page}
                         onSelect={this.onPageChange.bind(this)} />
 
-                    <span style={{'marginLeft': '40px', top: '20px', position: 'relative'}}>{this.consulta.info}</span>
+                    <span style={{'marginLeft': '40px', top: '-30px', position: 'relative'}}>{this.consulta.info}</span>
                 </div>
             </Card>
         );

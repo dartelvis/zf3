@@ -1,0 +1,58 @@
+{
+  "name": "zf2",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@teste.zf2.com.br:2265/zf2.git"
+  },
+  "scripts": {
+    "build": "NODE_ENV=production ./node_modules/.bin/webpack -p",
+    "dev": "NODE_ENV=development ./node_modules/.bin/webpack-dev-server --progress --inline --hot"
+  },
+  "private": true,
+  "devDependencies": {
+    "admin-on-rest": "^1.1.0",
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-env": "^1.5.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-es2016": "^6.24.1",
+    "babel-preset-latest": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-react-hmre": "^1.1.1",
+    "html-webpack-plugin": "^2.28.0",
+    "jest": "^20.0.4",
+    "react-hot-loader": "^1.3.1",
+    "transfer-webpack-plugin": "^0.1.4",
+    "webpack": "^2.6.1",
+    "webpack-dev-middleware": "^1.10.2",
+    "webpack-dev-server": "^2.4.5"
+  },
+  "dependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.19.0",
+    "create-react-class": "^15.5.3",
+    "history": "^3.2.1",
+    "material-ui": "^0.18.2",
+    "moment": "^2.17.1",
+    "prop-types": "^15.5.10",
+    "react": "^15.5.4",
+    "react-big-calendar": "^0.14.0",
+    "react-bootstrap": "^0.30.7",
+    "react-bootstrap-date-picker": "^4.0.0",
+    "react-datetime": "^2.8.4",
+    "react-dom": "^15.5.4",
+    "react-dropzone-component": "^2.0.0",
+    "react-frame-component": "^1.0.1",
+    "react-google-charts": "^1.4.2",
+    "react-infinite": "^0.11.0",
+    "react-router": "^3.0.0",
+    "react-select": "^1.0.0-rc.3",
+    "react-tap-event-plugin": "^2.0.1",
+    "react-tree-menu": "^1.5.0",
+    "recharts": "^0.19.0",
+    "redux": "^3.6.0",
+    "uniqid": "^4.1.0",
+    "vanilla-masker": "^1.0.9"
+  }
+}

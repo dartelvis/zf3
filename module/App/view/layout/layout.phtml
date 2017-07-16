@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Teste</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <?php
+        echo $this->headLink(array(
+            'rel' => 'shortcut icon',
+            'href' => $this->basePath() . '/img/favicon.png'
+        ));
+
+        // Instrui o Internet Explorer a utilizar a ultima versão disponível
+        if (preg_match("/MSIE/", $_SERVER["HTTP_USER_AGENT"])) :
+        ?>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <?php endif ?>
+        <meta http-equiv="Content-Type"  content="text/html;charset=UTF-8"/>
+
+        <!-- Latest compiled and minified CSS -->
+<!--        <link rel="stylesheet" href="<?= $this->basePath('css/bootstrap/bootstrap.min.css')?>" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+         Optional theme
+        <link rel="stylesheet" href="<?= $this->basePath('css/bootstrap/bootstrap-theme.min.css')?>" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+        <script type="text/javascript" src="<?= $this->basePath('/js/jquery-3.1.1.min.js') ?>"></script>-->
+    </head>
+    <style>
+        html, body {
+            width:100%;
+            height:100%;
+            margin:0;
+            padding:0;
+        }
+    </style>
+    <body ng-app="app">
+            <?php echo $this->content; ?>
+    </body>
+</html>

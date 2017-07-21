@@ -40,7 +40,7 @@ return [
                     ),
                     'route'    => '/[:react]',
                     'constraints' => array(
-                        'react' => 'teste',
+                        'react' => 'sobre|produtos|contato|cardapio',
                     ),
                 ),
             ),
@@ -50,11 +50,15 @@ return [
     'controllers' => [
         'aliases' => [
             'index' => Controller\IndexController::class,
-            'teste' =>  Controller\TesteController::class
+            'enderecos' => Controller\EnderecosController::class,
+            'alimentos' => Controller\AlimentosController::class,
+            'cardapios' => Controller\CardapiosController::class,
         ],
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
-            Controller\TesteController::class => InvokableFactory::class,
+            Controller\EnderecosController::class => InvokableFactory::class,
+            Controller\AlimentosController::class => InvokableFactory::class,
+            Controller\CardapiosController::class => InvokableFactory::class,
         ],
     ],
     'view_manager' => [

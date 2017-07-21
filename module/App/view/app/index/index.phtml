@@ -10,7 +10,7 @@
         <?php
         echo $this->headLink(array(
             'rel' => 'shortcut icon',
-            'href' => $this->basePath() . '/img/favicon.ico'
+            'href' => $this->basePath() . '/img/favicon2.ico'
         ));
         ?>
 
@@ -25,6 +25,16 @@
               font-family: 'Roboto', sans-serif;
             }
 
+            p {
+                padding: 10px;
+                font-size: 18px;
+            }
+            
+            .card-main {
+                margin: 2em;
+                opacity: 0.9;
+            }
+            
             body {
               font-size: 13px;
               line-height: 20px;
@@ -73,8 +83,8 @@
 //            $config = $this->serviceLocator('config');
             if (true) {
         ?>
-                <script src="http://localhost:8008/bundle.js" type="text/javascript"></script>
-                <!--<script src="<?= $this->basePath('js/bundle.js')?>" type="text/javascript"></script>-->
+                <!--<script src="http://localhost:8008/bundle.js" type="text/javascript"></script>-->
+                <script src="<?= $this->basePath('js/bundle.js')?>" type="text/javascript"></script>
                 <script>
                     (function() {
                         document.body.removeChild(document.querySelector("#progressContainer"));

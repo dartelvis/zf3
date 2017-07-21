@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-class TesteService extends EntityService
+class AlimentosService extends EntityService
 {
 
     public function getTable()
     {
-        return 'teste';
+        return 'alimentos';
     }
 
 }

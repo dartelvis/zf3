@@ -9,6 +9,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import Avatar from 'material-ui/Avatar';
 import ImageSettings from 'material-ui/svg-icons/action/settings';
 import ImageSair from 'material-ui/svg-icons/action/exit-to-app';
+import ImageSearch from 'material-ui/svg-icons/action/search';
 import { Link } from 'react-router';
 import { messageActions } from '../../actions';
 import { AutoComplete, Badge, Divider, Dialog, CardText } from 'material-ui';
@@ -139,15 +140,15 @@ class IconesSuperiores extends React.Component
                 </div>
                 {this.state.iconSearch && <IconButton
                     tooltipPosition="bottom-center"
-                    onClick={() => {
+                    onTouchTap={() => {
                         var iconSearchShow = !this.state.iconSearchShow;
                         this.setState({iconSearchShow: iconSearchShow});
                         this.props.setHeight(iconSearchShow ? 116: 66);
                     }}
                     iconStyle={{color: '#fff',fontSize: '24px'}}
-                    iconClassName="md md-search" tooltip="Buscar"
+                    tooltip="Buscar"
                     style={{width: '50px',height: '38px', textAlign: 'center', padding: '0'}}
-                />}
+                        ><ImageSearch/></IconButton>}
 
                 <IconMenu
                     iconButtonElement={

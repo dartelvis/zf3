@@ -7,8 +7,10 @@ import { Provider } from 'react-redux';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Main from './app/Main';
 import Home from './app/Home';
-import Teste from './app/teste/Teste';
-import ComProspect from './app/teste/Teste';
+import Sobre from './app/Sobre';
+import Contato from './app/Contato';
+import Produtos from './app/Produtos';
+import Cardapio from './app/Cardapio';
 import Fetch from './util/Fetch';
 import store from './store';
 
@@ -33,7 +35,10 @@ render((
         <Router history={browserHistory}>
             <Route path='/' component={Main}>
                 <IndexRoute component={Home} />
-                <Route path='teste' component={Teste} />
+                <Route path='sobre' component={Sobre} />
+                <Route path='contato' component={Contato} />
+                <Route path='produtos' component={Produtos} />
+                <Route path='cardapio' component={Cardapio} />
             </Route>
         </Router>
     </Provider>

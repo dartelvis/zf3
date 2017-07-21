@@ -21,7 +21,7 @@ class DefaultController extends AbstractActionController
     public function getPdo()
     {
         if (empty($this->pdo)) {
-            $this->pdo = new \PDO("pgsql:dbname=teste;host=localhost;port=5932", 'sysdba', '');
+            $this->pdo = new \PDO("pgsql:dbname=bd_prog_2;host=localhost;port=5432", 'postgres', '');
         }
         return $this->pdo;
     }

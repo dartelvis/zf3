@@ -8,7 +8,11 @@ import Paper from 'material-ui/Paper';
 import Toggle from 'material-ui/Toggle';
 import { List, ListItem } from 'material-ui/List';
 import IconButton from 'material-ui/IconButton';
-import ImageHome from 'material-ui/svg-icons/navigation/apps';
+import ImageHome from 'material-ui/svg-icons/action/home';
+import ImageSobre from 'material-ui/svg-icons/maps/local-dining';
+import ImageContato from 'material-ui/svg-icons/communication/phonelink-ring';
+import ImageProdutos from 'material-ui/svg-icons/maps/restaurant';
+import ImageCardapio from 'material-ui/svg-icons/communication/import-contacts';
 import ImageEmpresa from 'material-ui/svg-icons/communication/business';
 import Admin from 'material-ui/svg-icons/action/build';
 import ImageCadastros from 'material-ui/svg-icons/content/add-circle-outline';
@@ -127,26 +131,40 @@ class Main extends React.Component
             <div>
                 <List>
                     <ListItem
-                        key="inicial"
-                        primaryText="Inicial"
+                        key="Home"
+                        primaryText="Home"
                         leftIcon={<ImageHome/>}
                         containerElement={<Link to="/"/>}
                         onTouchTap={this.handleListItemTouchTap}
                     />
+                    <ListItem
+                        key="Sobre"
+                        primaryText="Sobre"
+                        leftIcon={<ImageSobre/>}
+                        containerElement={<Link to="/sobre"/>}
+                        onTouchTap={this.handleListItemTouchTap}
+                    />
+                    <ListItem
+                        key="Produtos"
+                        primaryText="Produtos"
+                        leftIcon={<ImageProdutos/>}
+                        containerElement={<Link to="/produtos"/>}
+                        onTouchTap={this.handleListItemTouchTap}
+                    />
+                    <ListItem
+                        key="Contato"
+                        primaryText="Contato"
+                        leftIcon={<ImageContato/>}
+                        containerElement={<Link to="/contato"/>}
+                        onTouchTap={this.handleListItemTouchTap}
+                    />
                     {this.state.user &&
                         <ListItem
-                            primaryText="Cadastros"
-                            leftIcon={<ImageCadastros />}
-                            initiallyOpen={false}
-                            primaryTogglesNestedList={true}
-                            nestedItems={[
-                                <ListItem
-                                    key="teste"
-                                    primaryText="Testes"
-                                    containerElement={<Link to="/teste"/>}
-                                    onTouchTap={this.handleListItemTouchTap}
-                                />
-                            ]}
+                            key="Cardapio"
+                            primaryText="Cardapio"
+                            leftIcon={<ImageCardapio/>}
+                            containerElement={<Link to="/cardapio"/>}
+                            onTouchTap={this.handleListItemTouchTap}
                         />
                     }
                 </List>
@@ -173,7 +191,11 @@ class Main extends React.Component
                             />
                         }
                     />
-                    <div className="body" style={{ display: 'flex', flex: '1', backgroundColor: '#edecec' }}>
+                    <div className="body" style={{ display: 'flex', flex: '1', height: "100%",
+                        backgroundPosition: "center",
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: "cover",
+                        backgroundImage: 'url("' + window.App.basePath + '/img/logo/7.jpg")'}}>
                         {this.state.showMenu &&
                             <div style={{flex: '0 0 20em', height: (window.innerHeight - this.state.height), overflow: 'auto'}}>
                                 <Paper style={{'minHeight': (window.innerHeight - this.state.height)}}>

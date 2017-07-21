@@ -1,13 +1,12 @@
 <?php
 
 namespace App\Services;
-ini_set('display_errors', 1);
 abstract class EntityService
 {
     /**
      * @var \PDO
      */
-    private $pdo;
+    protected $pdo;
 
     public function __construct(\PDO $pdo)
     {
